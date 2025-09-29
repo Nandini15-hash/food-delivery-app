@@ -1,0 +1,186 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - FoodDelivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background-color: #fff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 100; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
+        .logo { font-size: 24px; font-weight: 700; color: #ff6b6b; }
+        .logo span { color: #4ecdc4; }
+        nav ul { display: flex; list-style: none; }
+        nav ul li { margin-left: 25px; }
+        nav ul li a { text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s; }
+        nav ul li a:hover { color: #ff6b6b; }
+        .auth-buttons a { text-decoration: none; padding: 8px 16px; border-radius: 4px; font-weight: 500; transition: all 0.3s; }
+        .login-btn { color: #333; margin-right: 10px; }
+        .register-btn { background-color: #ff6b6b; color: white; }
+        .register-btn:hover { background-color: #ff5252; }
+        .cart-container { padding: 40px 0; }
+        .cart-title { font-size: 32px; margin-bottom: 30px; color: #333; }
+        .cart-items { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-bottom: 30px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .item-info h3 { margin-bottom: 5px; }
+        .item-price { color: #ff6b6b; font-weight: 600; }
+        .quantity-controls { display: flex; align-items: center; gap: 10px; }
+        .quantity-btn { background: #f0f0f0; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        .remove-btn { background: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .cart-summary { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .total { font-size: 20px; font-weight: 700; border-top: 1px solid #eee; padding-top: 10px; }
+        .checkout-btn { background-color: #ff6b6b; color: white; border: none; padding: 15px; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background-color 0.3s; margin-top: 20px; }
+        .checkout-btn:hover { background-color: #ff5252; }
+        .empty-cart { text-align: center; padding: 60px 0; }
+        .empty-cart i { font-size: 64px; color: #ddd; margin-bottom: 20px; }
+        footer { background-color: #333; color: white; padding: 50px 0 20px; margin-top: 60px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">Food<span>Delivery</span></div>
+            <nav>
+                <ul>
+                    <li><a href="food-delivery.html">Home</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="cart.html" class="active">Cart</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="register-btn">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container cart-container">
+        <h1 class="cart-title">Your Cart</h1>
+        
+        <div id="cartContent">
+            <!-- Cart items will be populated here -->
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <h2>Your cart is empty</h2>
+                <p>Add some delicious food from our restaurants!</p>
+                <button class="checkout-btn" onclick="location.href='food-delivery.html'" style="max-width: 200px;">Browse Restaurants</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p style="text-align: center;">&copy; 2023 FoodDelivery. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample cart data
+        const cartItems = [
+            { id: 1, name: "Margherita Pizza", price: 14.99, quantity: 1 },
+            { id: 2, name: "Garlic Bread", price: 5.99, quantity: 2 }
+        ];
+
+        function renderCart() {
+            const cartContent = document.getElementById('cartContent');
+            
+            if (cartItems.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Add some delicious food from our restaurants!</p>
+                        <button class="checkout-btn" onclick="location.href='food-delivery.html'" style="max-width: 200px;">Browse Restaurants</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let itemsHTML = '';
+            let subtotal = 0;
+
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h3>${item.name}</h3>
+                            <div class="item-price">$${item.price.toFixed(2)}</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </div>
+                        <div class="item-total">$${itemTotal.toFixed(2)}</div>
+                        <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+                    </div>
+                `;
+            });
+
+            const deliveryFee = 2.99;
+            const tax = subtotal * 0.08;
+            const total = subtotal + deliveryFee + tax;
+
+            cartContent.innerHTML = `
+                <div class="cart-items">
+                    ${itemsHTML}
+                </div>
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Fee:</span>
+                        <span>$${deliveryFee.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax:</span>
+                        <span>$${tax.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span>$${total.toFixed(2)}</span>
+                    </div>
+                    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+                </div>
+            `;
+        }
+
+        function updateQuantity(itemId, change) {
+            const item = cartItems.find(item => item.id === itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeItem(itemId);
+                } else {
+                    renderCart();
+                }
+            }
+        }
+
+        function removeItem(itemId) {
+            const index = cartItems.findIndex(item => item.id === itemId);
+            if (index !== -1) {
+                cartItems.splice(index, 1);
+                renderCart();
+            }
+        }
+
+        function checkout() {
+            alert('Proceeding to checkout...');
+            // In a real app, this would redirect to checkout page
+        }
+
+        // Initialize cart
+        renderCart();
+    </script>
+</body>
+</html>
