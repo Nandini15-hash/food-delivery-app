@@ -1,1 +1,7 @@
-"[large-file]" 
+node_modules/ 
+.env 
+.cache 
+dist/ 
+build/ 
+.DS_Store 
+*.log 
